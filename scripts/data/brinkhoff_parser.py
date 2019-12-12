@@ -20,7 +20,6 @@ def iter_trajectories(fpath):
 
         assert _is_trajectory_line(i)
 
-
 def _is_trajectory_line(i):
     return i % 2
 
@@ -40,5 +39,10 @@ def _check_trajectory(line):
 
 
 if __name__ == "__main__":
-    trajs = list(iter_trajectories("brinkhoff.dat"))
-    assert len(trajs) == 20000
+    tally = []
+    for traj in iter_trajectories("brinkhoff.dat"):
+        tally.append(len(traj))
+    from matplotlib import pyplot
+
+    pyplot.hist(tally, bins=100)
+    pyplot.show()
