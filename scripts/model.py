@@ -31,9 +31,9 @@ class GeneratorResBlock(torch.nn.Module):
         self.shtc = shortcut
 
     def forward(self, X, z):
-        X = self._expand_vec_and_add(self.noz1, self.mod1, z, X)
-        X = self._expand_vec_and_add(self.noz2, self.mod2, z, X)
-        return X + self.shtc(X)
+        Xh = self._expand_vec_and_add(self.noz1, self.mod1, z, X)
+        Xh = self._expand_vec_and_add(self.noz2, self.mod2, z, Xh)
+        return Xh + self.shtc(X)
 
     def _expand_vec_and_add(self, net, mod, v, X):
         S = len(X.shape)
