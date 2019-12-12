@@ -48,8 +48,14 @@ def create_dataset(
     return dload
 
 
+def iter_valid_trajectories(Xh):
+    for row in Xh:
+        idx = row[2] > 0
+        yield row[:2, idx].T
+
 def plot_and_save(Xh, save_path):
-    Xh = Xh.cpu().numpy()
+    Xh = Xh.squeeze(1).cpu().numpy()
+    Xh = iter_valid_trajectories(Xh)
     plot_trajectories.plot_trajectories(Xh, save_path, prob=1.0)
 
 def train(
@@ -72,40 +78,45 @@ def train(
     G = model.Generator(noise_size, hidden_size, MAX_TRAJ_LENGTH).to(device)
     D = model.Discriminator(MAX_TRAJ_LENGTH, hidden_size).to(device)
 
+    if device == "cuda":
+        G = torch.nn.DataParallel(G)
+        D = torch.nn.DataParallel(D)
+
     D_optim = torch.optim.AdamW(D.parameters(), lr=D_lr, betas=(0, 0.999))
     G_optim = torch.optim.AdamW(G.parameters(), lr=G_lr, betas=(0, 0.999))
 
     for epoch in range(epochs):
 
-        with tqdm.tqdm(enumerate(dset, 1), ncols=80) as bar:
-            for i, (X,) in bar:
+        with tqdm.tqdm(dset, ncols=80) as bar:
+            for i, (X,) in enumerate(bar, 1):
 
                 X = X.to(device)
                 z = torch.randn(batch_size, noise_size).to(device)
 
-                if i % n_critic == 0 or i == epochs:
+                if i % n_critic == 0:
 
                     G.train()
                     Xh = G(z)
 
                     D.eval()
                     G_optim.zero_grad()
-                    (-D.loss(X, Xh)).backward()
+                    (-model.Discriminator.loss(D, X, Xh)).backward()
                     G_optim.step()
 
-                with torch.no_grad():
-                    G.eval()
-                    Xh = G(z)
+                else:
+                    with torch.no_grad():
+                        G.eval()
+                        Xh = G(z)
 
-                D.train()
-                loss = D.loss(X, Xh)
-                D_optim.zero_grad()
-                loss.backward()
-                D_optim.step()
+                    D.train()
+                    loss = model.Discriminator.loss(D, X, Xh)
+                    D_optim.zero_grad()
+                    loss.backward()
+                    D_optim.step()
 
                 bar.set_description("[E%03d] %.4f" % (epoch, loss.item()))
 
-            if epoch % epoch_sample_cycle:
+            if epoch % epoch_sample_cycle == 0:
 
                 with torch.no_grad():
                     z = torch.randn(epoch_sample_count, noise_size).to(device)
@@ -124,7 +135,7 @@ if __name__ == "__main__":
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--noise_size", type=int, default=64)
     parser.add_argument("--hidden_size", type=int, default=32)
-    parser.add_argument("--n_critic", type=int, default=4)
+    parser.add_argument("--n_critic", type=int, default=3)
     parser.add_argument("--D_lr", type=float, default=2e-4)
     parser.add_argument("--G_lr", type=float, default=5e-5)
     parser.add_argument("--epoch_sample_cycle", type=int, default=5)

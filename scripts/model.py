@@ -201,5 +201,6 @@ class Discriminator(torch.nn.Module):
         N = X.size(0)
         return self.tail(self.net(X).view(N, self.h))
 
+    @staticmethod
     def loss(self, X, Xh):
         return self(X).mean(axis=0) - self(Xh).mean(axis=0)
