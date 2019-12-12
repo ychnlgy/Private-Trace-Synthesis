@@ -64,7 +64,7 @@ class Generator(torch.nn.Module):
         self.bk1 = GeneratorResBlock(
             noise_net1=torch.nn.Linear(self.noise_part, self.h),
             noise_net2=torch.nn.Linear(self.noise_part, self.h),
-            shortcut=torch.nn.ConvTranspose2d(1, self.h, (1, 2), stride=(1, 2))
+            shortcut=torch.nn.ConvTranspose2d(1, self.h, (1, 2), stride=(1, 2)),
             module1=torch.nn.Sequential(
                 torch.nn.BatchNorm2d(self.h),
                 torch.nn.ReLU(),
@@ -81,7 +81,7 @@ class Generator(torch.nn.Module):
         self.bk2 = GeneratorResBlock(
             noise_net1=torch.nn.Linear(self.noise_part, self.h),
             noise_net2=torch.nn.Linear(self.noise_part, self.h),
-            shortcut=torch.nn.ConvTranspose2d(self.h, self.h//2, (1, 2), stride=(1, 2))
+            shortcut=torch.nn.ConvTranspose2d(self.h, self.h//2, (1, 2), stride=(1, 2)),
             module1=torch.nn.Sequential(
                 torch.nn.BatchNorm2d(self.h),
                 torch.nn.ReLU(),
@@ -98,7 +98,7 @@ class Generator(torch.nn.Module):
         self.bk2 = GeneratorResBlock(
             noise_net1=torch.nn.Linear(self.noise_part, self.h//2),
             noise_net2=torch.nn.Linear(self.noise_part, self.h//2),
-            shortcut=torch.nn.ConvTranspose2d(self.h//2, self.h//4, (1, 2), stride=(1, 2))
+            shortcut=torch.nn.ConvTranspose2d(self.h//2, self.h//4, (1, 2), stride=(1, 2)),
             module1=torch.nn.Sequential(
                 torch.nn.BatchNorm2d(self.h//2),
                 torch.nn.ReLU(),
