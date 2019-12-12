@@ -21,7 +21,7 @@ class ResBlock(torch.nn.Module):
         return self.net(X) + self.sht(X)
 
 
-class GeneratorResBlock(ResBlock):
+class GeneratorResBlock(torch.nn.Module):
 
     def __init__(self, noise_net1, noise_net2, module1, module2, shortcut):
         super().__init__()
