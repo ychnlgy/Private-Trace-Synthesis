@@ -40,7 +40,6 @@ class GeneratorResBlock(torch.nn.Module):
         vh = net(v)
         E = [1] * (S - len(vh.shape))
         Vh = vh.view(*vh.shape, *E)
-        print(X.shape, Vh.shape)
         return mod(X + Vh)
 
 
@@ -95,7 +94,7 @@ class Generator(torch.nn.Module):
         )
 
         # (N, self.h//2, 3, 4L) -> (N, self.h//4, 3, 8L)
-        self.bk2 = GeneratorResBlock(
+        self.bk3 = GeneratorResBlock(
             noise_net1=torch.nn.Linear(self.noise_part, self.h//2),
             noise_net2=torch.nn.Linear(self.noise_part, self.h//2),
             shortcut=torch.nn.ConvTranspose2d(self.h//2, self.h//4, (1, 2), stride=(1, 2)),
