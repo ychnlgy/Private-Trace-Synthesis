@@ -84,8 +84,6 @@ def train(
 
                 if i % n_critic == 0 or i == epochs:
 
-                    z = noiser(batch_size)
-
                     G.train()
                     Xh = G(z)
 
