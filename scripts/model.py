@@ -15,7 +15,6 @@ class ResBlock(torch.nn.Module):
         super().__init__()
         self.net = module
         self.sht = shortcut
-        self.act = activation
 
     def forward(self, X):
         return self.net(X) + self.sht(X)
