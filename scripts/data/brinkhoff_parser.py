@@ -43,6 +43,6 @@ if __name__ == "__main__":
     for traj in iter_trajectories("brinkhoff.dat"):
         tally.append(len(traj))
     from matplotlib import pyplot
-
+    print(max(tally))
     pyplot.hist(tally, bins=100)
     pyplot.show()
