@@ -40,6 +40,7 @@ class GeneratorResBlock(torch.nn.Module):
         vh = net(v)
         E = [1] * (S - len(vh.shape))
         Vh = vh.view(*vh.shape, *E)
+        print(X.shape, Vh.shape)
         return mod(X + Vh)
 
 
