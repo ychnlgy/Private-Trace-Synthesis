@@ -82,8 +82,8 @@ def train(
         G = torch.nn.DataParallel(G)
         D = torch.nn.DataParallel(D)
 
-    D_optim = torch.optim.AdamW(D.parameters(), lr=D_lr, betas=(0, 0.999))
-    G_optim = torch.optim.AdamW(G.parameters(), lr=G_lr, betas=(0, 0.999))
+    D_optim = torch.optim.Adam(D.parameters(), lr=D_lr, betas=(0, 0.999))
+    G_optim = torch.optim.Adam(G.parameters(), lr=G_lr, betas=(0, 0.999))
 
     for epoch in range(epochs):
 
