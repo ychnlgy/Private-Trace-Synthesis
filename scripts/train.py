@@ -80,6 +80,7 @@ def train(
         with tqdm.tqdm(enumerate(dset, 1), ncols=80) as bar:
             for i, (X,) in bar:
 
+                X = X.to(device)
                 z = torch.randn(batch_size, noise_size).to(device)
 
                 if i % n_critic == 0 or i == epochs:
