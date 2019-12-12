@@ -146,13 +146,19 @@ class Discriminator(torch.nn.Module):
             ResBlock(
                 module=torch.nn.Sequential(
                     torch.nn.ReLU(),
-                    torch.nn.Conv2d(1, self.h//4, 3, padding=1),
+                    torch.nn.utils.spectral_norm(
+                        torch.nn.Conv2d(1, self.h//4, 3, padding=1)
+                    ),
                     torch.nn.ReLU(),
-                    torch.nn.Conv2d(self.h//4, self.h//4, 3, padding=1),
+                    torch.nn.utils.spectral_norm(
+                        torch.nn.Conv2d(self.h//4, self.h//4, 3, padding=1)
+                    ),
                     torch.nn.AvgPool2d((1, 3), stride=(1, 2), padding=(0, 1))
                 ),
                 shortcut=torch.nn.Sequential(
-                    torch.nn.Conv2d(1, self.h//4, 1),
+                    torch.nn.utils.spectral_norm(
+                        torch.nn.Conv2d(1, self.h//4, 1)
+                    ),
                     torch.nn.AvgPool2d((1, 3), stride=(1, 2), padding=(0, 1))
                 )
             ),
@@ -161,13 +167,19 @@ class Discriminator(torch.nn.Module):
             ResBlock(
                 module=torch.nn.Sequential(
                     torch.nn.ReLU(),
-                    torch.nn.Conv2d(self.h//4, self.h//2, 3, padding=1),
+                    torch.nn.utils.spectral_norm(
+                        torch.nn.Conv2d(self.h//4, self.h//2, 3, padding=1)
+                    ),
                     torch.nn.ReLU(),
-                    torch.nn.Conv2d(self.h//2, self.h//2, 3, padding=1),
+                    torch.nn.utils.spectral_norm(
+                        torch.nn.Conv2d(self.h//2, self.h//2, 3, padding=1)
+                    ),
                     torch.nn.AvgPool2d((1, 3), stride=(1, 2), padding=(0, 1))
                 ),
                 shortcut=torch.nn.Sequential(
-                    torch.nn.Conv2d(self.h//4, self.h//2, 1),
+                    torch.nn.utils.spectral_norm(
+                        torch.nn.Conv2d(self.h//4, self.h//2, 1)
+                    ),
                     torch.nn.AvgPool2d((1, 3), stride=(1, 2), padding=(0, 1))
                 )
             ),
@@ -176,25 +188,35 @@ class Discriminator(torch.nn.Module):
             ResBlock(
                 module=torch.nn.Sequential(
                     torch.nn.ReLU(),
-                    torch.nn.Conv2d(self.h//2, self.h, 3, padding=1),
+                    torch.nn.utils.spectral_norm(
+                        torch.nn.Conv2d(self.h//2, self.h, 3, padding=1)
+                    ),
                     torch.nn.ReLU(),
-                    torch.nn.Conv2d(self.h, self.h, 3, padding=1),
+                    torch.nn.utils.spectral_norm(
+                        torch.nn.Conv2d(self.h, self.h, 3, padding=1)
+                    ),
                     torch.nn.AvgPool2d((1, 3), stride=(1, 2), padding=(0, 1))
                 ),
                 shortcut=torch.nn.Sequential(
-                    torch.nn.Conv2d(self.h//2, self.h, 1),
+                    torch.nn.utils.spectral_norm(
+                        torch.nn.Conv2d(self.h//2, self.h, 1)
+                    ),
                     torch.nn.AvgPool2d((1, 3), stride=(1, 2), padding=(0, 1))
                 )
             ),
 
-            torch.nn.Conv2d(self.h, self.h, 3),
+            torch.nn.utils.spectral_norm(
+                torch.nn.Conv2d(self.h, self.h, 3)
+            ),
             # (N, self.h, 1, ?) -> (N, self.h, 1, 1)
             torch.nn.AdaptiveAvgPool2d((1, 1))
         )
 
         self.tail = torch.nn.Sequential(
             torch.nn.ReLU(),
-            torch.nn.Linear(self.h, 1)
+            torch.nn.utils.spectral_norm(
+                torch.nn.Linear(self.h, 1)
+            )
         )
 
     def forward(self, X):

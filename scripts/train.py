@@ -85,7 +85,7 @@ def train(
     D_optim = torch.optim.Adam(D.parameters(), lr=D_lr, betas=(0, 0.999))
     G_optim = torch.optim.Adam(G.parameters(), lr=G_lr, betas=(0, 0.999))
 
-    for epoch in range(epochs):
+    for epoch in range(1, epochs + 1):
 
         with tqdm.tqdm(dset, ncols=80) as bar:
             for i, (X,) in enumerate(bar, 1):
