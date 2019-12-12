@@ -38,7 +38,7 @@ def create_dataset(
         dataset[i, 2, n:] = -1.0
 
     adata = torch.from_numpy(dataset).unsqueeze(1)
-    assert (dataset.abs() <= 1.0).all()
+    assert (adata.abs() <= 1.0).all()
     tdata = torch.utils.data.TensorDataset(adata)
     dload = torch.utils.data.DataLoader(
         tdata,
