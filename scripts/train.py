@@ -6,7 +6,7 @@ import torch.utils.data
 import tqdm
 
 from data import brinkhoff_parser, plot_trajectories
-import model
+import model_simple as model
 
 
 MID_X = 12000
@@ -34,8 +34,8 @@ def create_dataset(
         n = len(traj)
         dataset[i, 0, :n] = (traj.T[0] - MID_X) / MAX_X
         dataset[i, 1, :n] = (traj.T[1] - MID_Y) / MAX_Y
-        dataset[i, 2, :n] = 1.0
-        dataset[i, 2, n:] = -1.0
+        dataset[i, 2, :n] = +0.5
+        dataset[i, 2, n:] = -0.5
 
     adata = torch.from_numpy(dataset).unsqueeze(1)
     assert (adata.abs() <= 1.0).all()
@@ -137,12 +137,12 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--fpath", required=True)
-    parser.add_argument("--epochs", type=int, required=True)
+    parser.add_argument("--epochs", type=int, default=1000)
 
-    parser.add_argument("--batch_size", type=int, default=128)
-    parser.add_argument("--noise_size", type=int, default=64)
-    parser.add_argument("--hidden_size", type=int, default=32)
-    parser.add_argument("--n_critic", type=int, default=3)
+    parser.add_argument("--batch_size", type=int, default=512)
+    parser.add_argument("--noise_size", type=int, default=16)
+    parser.add_argument("--hidden_size", type=int, default=8)
+    parser.add_argument("--n_critic", type=int, default=4)
     parser.add_argument("--D_lr", type=float, default=2e-4)
     parser.add_argument("--G_lr", type=float, default=5e-5)
     parser.add_argument("--epoch_sample_cycle", type=int, default=5)
