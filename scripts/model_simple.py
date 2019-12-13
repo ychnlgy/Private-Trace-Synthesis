@@ -15,7 +15,7 @@ class Generator(torch.nn.Module):
 
     def __init__(self, noise_size, hidden_size, max_traj_len):
         super().__init__()
-        assert max_traj_length % 4 == 0
+        assert max_traj_len % 4 == 0
         self.net = torch.nn.Sequential(
             torch.nn.Linear(noise_size, hidden_size * max_traj_len//4),
 
