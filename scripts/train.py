@@ -64,11 +64,18 @@ def train(
     D_lr, G_lr,
     epoch_sample_cycle,
     epoch_sample_count,
-    save_path
+    save_path,
+    debug
 ):
     if not os.path.isdir(save_path):
         os.makedirs(save_path)
     save_path = os.path.join(save_path, "E%03d.png")
+
+    if debug:
+        dset = create_dataset(fpath, epoch_sample_count, MAX_TRAJ_LENGTH)
+        X = next(iter(dset))
+        plot_and_save(X, save_path % 0)
+        return
 
     dset = create_dataset(fpath, batch_size, MAX_TRAJ_LENGTH)
 
@@ -141,6 +148,7 @@ if __name__ == "__main__":
     parser.add_argument("--epoch_sample_cycle", type=int, default=5)
     parser.add_argument("--epoch_sample_count", type=int, default=400)
     parser.add_argument("--save_path", default="synthesis")
+    parser.add_argument("--debug", type=int, default=0)
 
     args = parser.parse_args()
 
