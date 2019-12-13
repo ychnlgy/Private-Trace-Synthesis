@@ -50,8 +50,8 @@ def create_dataset(
 
 def iter_valid_trajectories(Xh):
     for row in Xh:
-        idx = row[2] > 0
-        yield row[:2, idx].T
+        idx = numpy.argmax(row[2] > 0)
+        yield row[:2, :idx].T
 
 def plot_and_save(Xh, save_path):
     Xh = Xh.squeeze(1).cpu().numpy()
@@ -103,11 +103,10 @@ def train(
                 if i % n_critic == 0:
 
                     G.train()
-                    Xh = G(z)
 
                     D.eval()
                     G_optim.zero_grad()
-                    (-model.Discriminator.loss(D, X, Xh)).backward()
+                    (-D(G(z)).mean().backward()
                     G_optim.step()
 
                 else:
@@ -116,7 +115,7 @@ def train(
                         Xh = G(z)
 
                     D.train()
-                    loss = model.Discriminator.loss(D, X, Xh)
+                    loss = D(Xh).mean() - D(X).mean()
                     D_optim.zero_grad()
                     loss.backward()
                     D_optim.step()
