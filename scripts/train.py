@@ -50,7 +50,7 @@ def create_dataset(
 
 def iter_valid_trajectories(Xh):
     for row in Xh:
-        idx = numpy.argmax(row[2] > 0)
+        idx = numpy.argmax(row[2] < 0)
         yield row[:2, :idx].T
 
 def plot_and_save(Xh, save_path):
