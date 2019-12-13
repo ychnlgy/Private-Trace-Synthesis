@@ -73,7 +73,7 @@ def train(
 
     if debug:
         dset = create_dataset(fpath, epoch_sample_count, MAX_TRAJ_LENGTH)
-        X = next(iter(dset))
+        (X,) = next(iter(dset))
         plot_and_save(X, save_path % 0)
         return
 
