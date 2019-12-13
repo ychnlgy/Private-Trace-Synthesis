@@ -106,7 +106,7 @@ def train(
 
                     D.eval()
                     G_optim.zero_grad()
-                    (-D(G(z)).mean().backward()
+                    (-D(G(z))).mean().backward()
                     G_optim.step()
 
                 else:
