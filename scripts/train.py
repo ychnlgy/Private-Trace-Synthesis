@@ -55,6 +55,7 @@ def iter_valid_trajectories(Xh):
 
 def plot_and_save(Xh, save_path):
     Xh = Xh.squeeze(1).cpu().numpy()
+    print(Xh.size())
     Xh = iter_valid_trajectories(Xh)
     plot_trajectories.plot_trajectories(Xh, save_path, prob=1.0)
 
