@@ -27,7 +27,15 @@ class Generator(torch.nn.Module):
 
             torch.nn.BatchNorm1d(hidden_size),
             torch.nn.ReLU(),
+            torch.nn.Conv1d(hidden_size, hidden_size, 7, padding=3),
+
+            torch.nn.BatchNorm1d(hidden_size),
+            torch.nn.ReLU(),
             torch.nn.ConvTranspose1d(hidden_size, hidden_size, 8, stride=2, padding=3),
+
+            torch.nn.BatchNorm1d(hidden_size),
+            torch.nn.ReLU(),
+            torch.nn.Conv1d(hidden_size, hidden_size, 7, padding=3),
 
             torch.nn.BatchNorm1d(hidden_size),
             torch.nn.ReLU(),
@@ -53,7 +61,17 @@ class Discriminator(torch.nn.Module):
 
             torch.nn.LeakyReLU(),
             torch.nn.utils.spectral_norm(
+                torch.nn.Conv1d(hidden_size, hidden_size, 7, padding=3)
+            ),
+
+            torch.nn.LeakyReLU(),
+            torch.nn.utils.spectral_norm(
                 torch.nn.Conv1d(hidden_size, hidden_size, 7, stride=2, padding=3)
+            ),
+
+            torch.nn.LeakyReLU(),
+            torch.nn.utils.spectral_norm(
+                torch.nn.Conv1d(hidden_size, hidden_size, 7, padding=3)
             ),
 
             torch.nn.LeakyReLU(),
