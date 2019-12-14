@@ -51,11 +51,12 @@ def create_dataset(
 def iter_valid_trajectories(Xh):
     for row in Xh:
         idx = numpy.argmax(row[2] < 0)
-        yield row[:2, :idx].T
+        out = row[:2, :idx].T
+        print(out.shape)
+        yield out
 
 def plot_and_save(Xh, save_path):
     Xh = Xh.squeeze(1).cpu().numpy()
-    print(Xh.shape)
     Xh = iter_valid_trajectories(Xh)
     plot_trajectories.plot_trajectories(Xh, save_path, prob=1.0)
 
