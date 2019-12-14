@@ -52,7 +52,7 @@ def iter_valid_trajectories(Xh):
     for row in Xh:
         idx = numpy.argmax(row[2] < 0)
         out = row[:2, :idx].T
-        print(out.shape)
+        print(out)
         yield out
 
 def plot_and_save(Xh, save_path):
