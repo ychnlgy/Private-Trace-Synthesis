@@ -13,6 +13,7 @@ def plot_trajectories(trajectories, save_path, prob=0.05):
     trajectories = list(trajectories)
     for traj in tqdm.tqdm(trajectories, ncols=80):
         if random.random() < prob:
+            print(traj.shape)
             pyplot.plot(traj[:, 0], traj[:, 1], ":")
     pyplot.savefig(save_path, bbox_inches="tight")
 
