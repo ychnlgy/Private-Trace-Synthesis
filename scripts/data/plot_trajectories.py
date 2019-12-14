@@ -16,6 +16,7 @@ def plot_trajectories(trajectories, save_path, prob=0.05):
             print(traj.shape)
             pyplot.plot(traj[:, 0], traj[:, 1], ":")
     pyplot.savefig(save_path, bbox_inches="tight")
+    pyplot.clf()
 
 
 if __name__ == "__main__":
