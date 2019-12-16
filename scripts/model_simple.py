@@ -43,15 +43,11 @@ class Generator(torch.nn.Module):
                 layers=[
                     torch.nn.BatchNorm1d(hidden_size),
                     torch.nn.ReLU(),
-                    torch.nn.Conv1d(hidden_size, 2*hidden_size, 1),
+                    torch.nn.Conv1d(hidden_size, hidden_size, 1, 7, padding=3),
 
-                    torch.nn.BatchNorm1d(2*hidden_size),
+                    torch.nn.BatchNorm1d(hidden_size),
                     torch.nn.ReLU(),
-                    torch.nn.Conv1d(2*hidden_size, 2*hidden_size, 7, padding=3),
-
-                    torch.nn.BatchNorm1d(2*hidden_size),
-                    torch.nn.ReLU(),
-                    torch.nn.Conv1d(2*hidden_size, hidden_size, 1)
+                    torch.nn.Conv1d(hidden_size, hidden_size, 1, 7, padding=3)
                 ]
             ),
 
@@ -65,15 +61,11 @@ class Generator(torch.nn.Module):
                 layers=[
                     torch.nn.BatchNorm1d(hidden_size),
                     torch.nn.ReLU(),
-                    torch.nn.Conv1d(hidden_size, 2*hidden_size, 1),
+                    torch.nn.Conv1d(hidden_size, hidden_size, 1, 11, padding=5),
 
-                    torch.nn.BatchNorm1d(2*hidden_size),
+                    torch.nn.BatchNorm1d(hidden_size),
                     torch.nn.ReLU(),
-                    torch.nn.Conv1d(2*hidden_size, 2*hidden_size, 11, padding=5),
-
-                    torch.nn.BatchNorm1d(2*hidden_size),
-                    torch.nn.ReLU(),
-                    torch.nn.Conv1d(2*hidden_size, hidden_size, 1)
+                    torch.nn.Conv1d(hidden_size, hidden_size, 1, 11, padding=5)
                 ]
             ),
 
@@ -105,18 +97,13 @@ class Discriminator(torch.nn.Module):
                 layers=[
                     torch.nn.LeakyReLU(),
                     torch.nn.utils.spectral_norm(
-                        torch.nn.Conv1d(hidden_size, 2*hidden_size, 1)
+                        torch.nn.Conv1d(hidden_size, hidden_size, 11, padding=5)
                     ),
 
                     torch.nn.LeakyReLU(),
                     torch.nn.utils.spectral_norm(
-                        torch.nn.Conv1d(2*hidden_size, 2*hidden_size, 11, padding=5)
+                        torch.nn.Conv1d(hidden_size, hidden_size, 11, padding=5)
                     ),
-
-                    torch.nn.LeakyReLU(),
-                    torch.nn.utils.spectral_norm(
-                        torch.nn.Conv1d(2*hidden_size, hidden_size, 1)
-                    )
                 ]
             ),
 
@@ -131,17 +118,12 @@ class Discriminator(torch.nn.Module):
                 layers=[
                     torch.nn.LeakyReLU(),
                     torch.nn.utils.spectral_norm(
-                        torch.nn.Conv1d(hidden_size, 2*hidden_size, 1)
+                        torch.nn.Conv1d(hidden_size, hidden_size, 7, padding=3)
                     ),
 
                     torch.nn.LeakyReLU(),
                     torch.nn.utils.spectral_norm(
-                        torch.nn.Conv1d(2*hidden_size, 2*hidden_size, 7, padding=3)
-                    ),
-
-                    torch.nn.LeakyReLU(),
-                    torch.nn.utils.spectral_norm(
-                        torch.nn.Conv1d(2*hidden_size, hidden_size, 1)
+                        torch.nn.Conv1d(hidden_size, hidden_size, 7, padding=3)
                     )
                 ]
             ),
