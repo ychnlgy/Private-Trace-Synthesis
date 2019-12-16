@@ -70,7 +70,8 @@ def train(
 ):
     if not os.path.isdir(save_path):
         os.makedirs(save_path)
-    save_path = os.path.join(save_path, "E%03d.png")
+    save_path = os.path.join(save_path, "E%05d.png")
+    modo_path = os.path.join(save_path, "E%05d.pkl")
 
     if debug:
         dset = create_dataset(fpath, epoch_sample_count, MAX_TRAJ_LENGTH)
@@ -93,7 +94,7 @@ def train(
     D_optim = torch.optim.Adam(D.parameters(), lr=D_lr, betas=(0, 0.999))
     G_optim = torch.optim.Adam(G.parameters(), lr=G_lr, betas=(0, 0.999))
 
-    for epoch in range(1, epochs + 1):
+    for epoch in range(0, epochs + 1):
 
         with tqdm.tqdm(dset, ncols=80) as bar:
             for i, (X,) in enumerate(bar, 1):
@@ -121,14 +122,16 @@ def train(
                     loss.backward()
                     D_optim.step()
 
-                bar.set_description("[E%03d] %.4f" % (epoch, loss.item()))
+                bar.set_description("[E%05d] %.4f" % (epoch, loss.item()))
 
-            if epoch % epoch_sample_cycle == 0:
+            if epoch % epoch_sample_cycle == 0 or epoch == epochs:
 
                 with torch.no_grad():
                     z = torch.randn(epoch_sample_count, noise_size).to(device)
                     Xh = G(z)
                     plot_and_save(Xh, save_path % epoch)
+
+                torch.save(G.state_dict(), modo_path % epoch)
 
 
 if __name__ == "__main__":
