@@ -66,7 +66,8 @@ def train(
     epoch_sample_cycle,
     epoch_sample_count,
     save_path,
-    debug
+    debug,
+    use_adamw
 ):
     if not os.path.isdir(save_path):
         os.makedirs(save_path)
@@ -91,8 +92,10 @@ def train(
     if device == "cuda":
         D = torch.nn.DataParallel(D)
 
-    D_optim = torch.optim.Adam(D.parameters(), lr=D_lr, betas=(0, 0.999))
-    G_optim = torch.optim.Adam(G.parameters(), lr=G_lr, betas=(0, 0.999))
+    Optim = [torch.optim.Adam, torch.optim.AdamW][use_adamw]
+
+    D_optim = Optim(D.parameters(), lr=D_lr, betas=(0, 0.999))
+    G_optim = Optim(G.parameters(), lr=G_lr, betas=(0, 0.999))
 
     for epoch in range(0, epochs + 1):
 
@@ -127,6 +130,7 @@ def train(
             if epoch % epoch_sample_cycle == 0 or epoch == epochs:
 
                 with torch.no_grad():
+                    G.eval()
                     z = torch.randn(epoch_sample_count, noise_size).to(device)
                     Xh = G(z)
                     plot_and_save(Xh, save_path % epoch)
@@ -152,6 +156,8 @@ if __name__ == "__main__":
     parser.add_argument("--epoch_sample_count", type=int, default=400)
     parser.add_argument("--save_path", default="synthesis")
     parser.add_argument("--debug", type=int, default=0)
+
+    parser.add_argument("--use_adamw", type=int, required=True)
 
     args = parser.parse_args()
 
