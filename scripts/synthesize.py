@@ -17,7 +17,7 @@ def traj_to_string(traj):
     return ">0:%s;" % line
 
 
-def main(save_dat, noise_size, hidden_size, model_path, dataset_size=20000, batch_size=100):
+def main(save_dat, noise_size, hidden_size, model_path, cap, dataset_size=20000, batch_size=100):
 
     device = ["cpu", "cuda"][torch.cuda.is_available()]
     print("Using: %s (cuda? %s)" % (device, torch.cuda.is_available()))
@@ -28,8 +28,8 @@ def main(save_dat, noise_size, hidden_size, model_path, dataset_size=20000, batc
     G.eval()
 
     Z = torch.randn(dataset_size, noise_size)
-    over = Z.abs() > 1
-    Z[over] = torch.rand(over.sum()) * 2 - 1
+    over = Z.abs() > cap
+    Z[over] = (torch.rand(over.sum()) * 2 - 1) * cap
 
     lines = []
 
@@ -67,6 +67,7 @@ if __name__ == "__main__":
     parser.add_argument("--noise_size", type=int, required=True)
     parser.add_argument("--hidden_size", type=int, required=True)
     parser.add_argument("--model_path", required=True)
+    parser.add_argument("--cap", type=int, required=True)
 
     args = parser.parse_args()
 
