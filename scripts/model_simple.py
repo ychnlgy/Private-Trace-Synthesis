@@ -33,7 +33,6 @@ class Generator(torch.nn.Module):
 
             Lambda(lambda X: X.view(-1, hidden_size, max_traj_len//4)),
 
-            torch.nn.BatchNorm1d(hidden_size),
             torch.nn.ReLU(),
             torch.nn.ConvTranspose1d(hidden_size, hidden_size, 8, stride=2, padding=3),
 
@@ -51,7 +50,6 @@ class Generator(torch.nn.Module):
                 ]
             ),
 
-            torch.nn.BatchNorm1d(hidden_size),
             torch.nn.ReLU(),
             torch.nn.ConvTranspose1d(hidden_size, hidden_size, 8, stride=2, padding=3),
 
