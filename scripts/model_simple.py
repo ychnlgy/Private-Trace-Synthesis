@@ -42,7 +42,7 @@ class Generator(torch.nn.Module):
 
                 torch.nn.BatchNorm1d(2*hidden_size),
                 torch.nn.ReLU(),
-                torch.nn.Conv1d(2*hidden_size, 2*hidden_size, 7, padding=3)
+                torch.nn.Conv1d(2*hidden_size, 2*hidden_size, 7, padding=3),
 
                 torch.nn.BatchNorm1d(2*hidden_size),
                 torch.nn.ReLU(),
@@ -60,7 +60,7 @@ class Generator(torch.nn.Module):
 
                 torch.nn.BatchNorm1d(2*hidden_size),
                 torch.nn.ReLU(),
-                torch.nn.Conv1d(2*hidden_size, 2*hidden_size, 11, padding=5)
+                torch.nn.Conv1d(2*hidden_size, 2*hidden_size, 11, padding=5),
 
                 torch.nn.BatchNorm1d(2*hidden_size),
                 torch.nn.ReLU(),
