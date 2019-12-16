@@ -28,6 +28,8 @@ def main(save_dat, noise_size, hidden_size, model_path, dataset_size=20000, batc
     G.eval()
 
     Z = torch.randn(dataset_size, noise_size)
+    over = Z.abs() > 1
+    Z[over] = torch.rand(over.sum()) * 2 - 1
 
     lines = []
 
