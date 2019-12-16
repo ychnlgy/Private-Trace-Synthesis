@@ -101,7 +101,7 @@ class Discriminator(torch.nn.Module):
 
             ResBlock(
                 shortcut=torch.nn.Conv1d(hidden_size, hidden_size, 1),
-                act=torch.nn.ReLU(),
+                act=torch.nn.LeakyReLU(),
                 layers=[
                     torch.nn.LeakyReLU(),
                     torch.nn.utils.spectral_norm(
@@ -127,7 +127,7 @@ class Discriminator(torch.nn.Module):
 
             ResBlock(
                 shortcut=torch.nn.Conv1d(hidden_size, hidden_size, 1),
-                act=torch.nn.ReLU(),
+                act=torch.nn.LeakyReLU(),
                 layers=[
                     torch.nn.LeakyReLU(),
                     torch.nn.utils.spectral_norm(
