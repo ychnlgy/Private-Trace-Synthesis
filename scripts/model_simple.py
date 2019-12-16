@@ -43,11 +43,11 @@ class Generator(torch.nn.Module):
                 layers=[
                     torch.nn.BatchNorm1d(hidden_size),
                     torch.nn.ReLU(),
-                    torch.nn.Conv1d(hidden_size, hidden_size, 1, 7, padding=3),
+                    torch.nn.Conv1d(hidden_size, hidden_size, 7, padding=3),
 
                     torch.nn.BatchNorm1d(hidden_size),
                     torch.nn.ReLU(),
-                    torch.nn.Conv1d(hidden_size, hidden_size, 1, 7, padding=3)
+                    torch.nn.Conv1d(hidden_size, hidden_size, 7, padding=3)
                 ]
             ),
 
@@ -61,11 +61,11 @@ class Generator(torch.nn.Module):
                 layers=[
                     torch.nn.BatchNorm1d(hidden_size),
                     torch.nn.ReLU(),
-                    torch.nn.Conv1d(hidden_size, hidden_size, 1, 11, padding=5),
+                    torch.nn.Conv1d(hidden_size, hidden_size, 11, padding=5),
 
                     torch.nn.BatchNorm1d(hidden_size),
                     torch.nn.ReLU(),
-                    torch.nn.Conv1d(hidden_size, hidden_size, 1, 11, padding=5)
+                    torch.nn.Conv1d(hidden_size, hidden_size, 11, padding=5)
                 ]
             ),
 
