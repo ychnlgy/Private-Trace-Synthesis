@@ -57,7 +57,7 @@ Below is an example of a dataset of Brinkhoff synthesized using AdaTrace with `Î
 
 ### GAN Experiments
 
-Using a simple GAN with no privacy, we produce the following example at 2000 epochs:
+Using a simple GAN with no privacy, we produce the following 20,000 traces at 2000 epochs:
 
 ![alt text](images/public-gan.png)
 
