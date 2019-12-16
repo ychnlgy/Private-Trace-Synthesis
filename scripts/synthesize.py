@@ -20,7 +20,7 @@ def traj_to_string(traj):
 def main(save_dat, noise_size, hidden_size, model_path, dataset_size=20000, batch_size=100):
 
     device = ["cpu", "cuda"][torch.cuda.is_available()]
-    print("Using: %s" % device)
+    print("Using: %s (cuda? %s)" % (device, torch.cuda.is_available()))
 
     G = model.Generator(noise_size, hidden_size, MAX_TRAJ_LENGTH)
     G.load_state_dict(torch.load(model_path, map_location="cpu"))
