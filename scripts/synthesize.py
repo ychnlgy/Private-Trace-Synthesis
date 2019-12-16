@@ -46,7 +46,7 @@ def main(save_dat, noise_size, hidden_size, model_path, dataset_size=20000, batc
 
                         f.write("#%d:\n" % (i + k))
                         f.write(traj_to_string(traj))
-                bar.update(1)
+                    bar.update(1)
 
         i = j
 
