@@ -48,7 +48,7 @@ def main(save_dat, noise_size, hidden_size, model_path, dataset_size=20000, batc
                         f.write(traj_to_string(traj))
                     bar.update(1)
 
-                i = j
+                    i = j
 
 
 if __name__ == "__main__":
