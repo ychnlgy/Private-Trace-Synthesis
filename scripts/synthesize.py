@@ -22,6 +22,7 @@ def main(save_dat, noise_size, hidden_size, model_path, dataset_size=20000, batc
     device = ["cpu", "cuda"][torch.cuda.is_available()]
 
     G = model.Generator(noise_size, hidden_size, MAX_TRAJ_LENGTH).to(device)
+    G.load_state_dict(torch.load(model_path))
     G.eval()
 
     Z = torch.randn(dataset_size, noise_size)
