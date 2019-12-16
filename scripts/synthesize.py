@@ -42,6 +42,8 @@ def main(save_dat, noise_size, hidden_size, model_path, dataset_size=20000, batc
 
                 for k, traj in enumerate(iter_valid_trajectories(Xh)):
                     assert traj.shape[1] == 2
+                    if traj.shape[0] < 1:
+                        continue
                     traj[:, 0] = traj[:, 0] * MAX_X + MID_X
                     traj[:, 1] = traj[:, 1] * MAX_Y + MID_Y
 
