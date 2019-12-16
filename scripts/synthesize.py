@@ -14,7 +14,7 @@ def traj_to_string(traj):
         p = "%.1f,%.1f" % (x, y)
         points.append(p)
     line = ";".join(points)
-    return ">0:%s;\n" % line
+    return ">0:%s;" % line
 
 
 def main(save_dat, noise_size, hidden_size, model_path, dataset_size=20000, batch_size=100):
@@ -29,26 +29,30 @@ def main(save_dat, noise_size, hidden_size, model_path, dataset_size=20000, batc
 
     Z = torch.randn(dataset_size, noise_size)
 
+    lines = []
+
+    with torch.no_grad():
+        with tqdm.tqdm(total=dataset_size//batch_size, ncols=80) as bar:
+            i = 0
+            while i < dataset_size:
+                j = i + batch_size
+
+                z = Z[i:j].to(device)
+                Xh = G(z)
+
+                for k, traj in enumerate(iter_valid_trajectories(Xh)):
+                    assert traj.shape[1] == 2
+                    traj[:, 0] = traj[:, 0] * MAX_X + MID_X
+                    traj[:, 1] = traj[:, 1] * MAX_Y + MID_Y
+
+                    lines.append("#%d:" % (i + k))
+                    lines.append(traj_to_string(traj))
+                bar.update(1)
+
+                i = j
+
     with open(save_dat, "w") as f:
-        with torch.no_grad():
-            with tqdm.tqdm(total=dataset_size//batch_size, ncols=80) as bar:
-                i = 0
-                while i < dataset_size:
-                    j = i + batch_size
-
-                    z = Z[i:j].to(device)
-                    Xh = G(z)
-
-                    for k, traj in enumerate(iter_valid_trajectories(Xh)):
-                        assert traj.shape[1] == 2
-                        traj[:, 0] = traj[:, 0] * MAX_X + MID_X
-                        traj[:, 1] = traj[:, 1] * MAX_Y + MID_Y
-
-                        f.write("#%d:\n" % (i + k))
-                        f.write(traj_to_string(traj))
-                    bar.update(1)
-
-                    i = j
+        f.write("\n".join(lines))
 
 
 if __name__ == "__main__":
