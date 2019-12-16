@@ -51,7 +51,7 @@ Diameter error:                 0.026553808548257285
 Length error:                   0.05082140129080564
 ```
 
-A visualization of an example synthetic dataset produced by AdaTrace is shown below:
+Below is an example of a dataset of Brinkhoff synthesized using AdaTrace with `ε = 1`):
 
 ![alt text](images/adatrace.png)
 
