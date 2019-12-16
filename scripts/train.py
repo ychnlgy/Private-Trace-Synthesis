@@ -89,7 +89,6 @@ def train(
     D = model.Discriminator(MAX_TRAJ_LENGTH, hidden_size).to(device)
 
     if device == "cuda":
-        G = torch.nn.DataParallel(G)
         D = torch.nn.DataParallel(D)
 
     D_optim = torch.optim.Adam(D.parameters(), lr=D_lr, betas=(0, 0.999))
