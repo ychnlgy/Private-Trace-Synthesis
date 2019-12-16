@@ -70,8 +70,9 @@ def train(
 ):
     if not os.path.isdir(save_path):
         os.makedirs(save_path)
-    save_path = os.path.join(save_path, "E%05d.png")
+
     modo_path = os.path.join(save_path, "E%05d.pkl")
+    save_path = os.path.join(save_path, "E%05d.png")
 
     if debug:
         dset = create_dataset(fpath, epoch_sample_count, MAX_TRAJ_LENGTH)
