@@ -34,7 +34,7 @@ def main(
     D = model.Discriminator(MAX_TRAJ_LENGTH, hidden_size).to(device)
 
     D_optim = optim.DPAdam(
-        D.parameters(),
+        params=D.parameters(),
         lr=D_lr,
         betas=(0, 0.999),
 
