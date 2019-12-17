@@ -94,6 +94,9 @@ def train(
     G = model.Generator(noise_size, hidden_size, MAX_TRAJ_LENGTH).to(device)
     D = model.Discriminator(MAX_TRAJ_LENGTH, hidden_size).to(device)
 
+    if device == "cuda":
+        D = torch.nn.DataParallel(D)
+
     D_optim = torch.optim.Adam(D.parameters(), lr=D_lr, betas=(0, 0.999))
     G_optim = torch.optim.Adam(G.parameters(), lr=G_lr, betas=(0, 0.999))
 
