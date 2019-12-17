@@ -55,6 +55,7 @@ def main(
         for i, (X,) in enumerate(bar):
 
             z = torch.randn(batch_size, noise_size)
+            print(X.size(), z.shape)
 
             if i % n_critic == 0:
 
