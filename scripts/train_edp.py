@@ -17,7 +17,7 @@ def main(
         iterations=epochs,
         noise_multiplier=noise_multiplier
     )
-    input("Epsilon: %.4f (press any key to continue) " % epsilon)
+    print("Epsilon: %.4f" % epsilon)
 
     tset = create_tensorset(fpath, MAX_TRAJ_LENGTH)
 
