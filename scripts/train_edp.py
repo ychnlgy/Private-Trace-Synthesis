@@ -12,7 +12,7 @@ def main(
     noise_multiplier
 ):
     epsilon = analysis.epsilon(
-        N=datasize,
+        N=DATASET_SIZE,
         batch_size=batch_size,
         iterations=epochs,
         noise_multiplier=noise_multiplier
