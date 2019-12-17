@@ -37,17 +37,17 @@ def main(
     G = model.Generator(noise_size, hidden_size, MAX_TRAJ_LENGTH).to(device)
     D = model.Discriminator(MAX_TRAJ_LENGTH, hidden_size).to(device)
 
-    D_optim = optim.DPRMSprop(
+    D_optim = optim.DPAdam(
         params=D.parameters(),
         lr=D_lr,
-        weight_decay=weight_decay,
+        betas=(0, 0.999),
 
         l2_norm_clip=l2_norm_clip,
         microbatch_size=1,
         minibatch_size=batch_size,
         noise_multiplier=noise_multiplier
     )
-    G_optim = torch.optim.RMSprop(G.parameters(), lr=G_lr, weight_decay=weight_decay)
+    G_optim = torch.optim.Adam(G.parameters(), lr=G_lr, betas=(0, 0.999))
 
     minibatch_loader, microbatch_loader = sampling.get_data_loaders(
         minibatch_size=batch_size,
@@ -117,8 +117,8 @@ if __name__ == "__main__":
     parser.add_argument("--noise_size", type=int, default=32)
     parser.add_argument("--hidden_size", type=int, default=32)
     parser.add_argument("--n_critic", type=int, default=5)
-    parser.add_argument("--D_lr", type=float, default=1e-3)
-    parser.add_argument("--G_lr", type=float, default=1e-3)
+    parser.add_argument("--D_lr", type=float, default=2e-4)
+    parser.add_argument("--G_lr", type=float, default=5e-5)
     parser.add_argument("--epoch_sample_cycle", type=int, default=20)
     parser.add_argument("--epoch_sample_count", type=int, default=100)
     parser.add_argument("--save_path", required=True)
