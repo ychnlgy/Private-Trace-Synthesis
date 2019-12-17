@@ -1,5 +1,4 @@
-from pyvacy import optim, analysis
-import pyvacy_sampling as sampling
+from pyvacy import optim, analysis, sampling
 
 from train import *
 
@@ -11,17 +10,21 @@ def main(
     epoch_sample_count,
     save_path
 ):
-    D_params = {
+    eps_params = {
         "N": DATASET_SIZE,
-        "l2_norm_clip": 1.0,
         "noise_multiplier": 1.1,
         "minibatch_size": batch_size,
-        "microbatch_size": 1,
         "delta": 1e-5,
         "iterations": epochs
     }
 
-    epsilon = analysis.epsilon(**D_params)
+    D_params = {
+        "l2_norm_clip": 1.0,
+        "microbatch_size": 1,
+        **eps_params
+    }
+
+    epsilon = analysis.epsilon(**eps_params)
     input("Epsilon: %.4f (press any key to continue) " % epsilon)
 
     tset = create_tensorset(fpath, MAX_TRAJ_LENGTH)
