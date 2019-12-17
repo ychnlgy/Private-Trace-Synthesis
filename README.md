@@ -59,11 +59,11 @@ Below is an example of a dataset of Brinkhoff synthesized using AdaTrace with `Î
 
 Using a simple GAN with no privacy, we produce the following 20,000 traces at 2000 epochs:
 
-![alt text](images/public-gan.png) ![alt text](images/brinkhoff.png)
+![alt text](images/public-gan.png)
 
 And at 13000 epochs we get:
 
-![alt text](images/public-gan-E13000.png) ![alt text](images/brinkhoff.png)
+![alt text](images/public-gan-E13000.png)
 
 Scores are (* means we do better):
 
