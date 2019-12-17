@@ -54,8 +54,7 @@ def main(
     with tqdm.tqdm(minibatch_loader(tset), ncols=80) as bar:
         for i, (X,) in enumerate(bar):
 
-            z = torch.randn(batch_size, noise_size)
-            print(X.size(), z.shape)
+            z = torch.randn(X.size(0), noise_size)
 
             if i % n_critic == 0:
 
