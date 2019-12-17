@@ -1,3 +1,5 @@
+import sys
+
 from pyvacy import optim, analysis, sampling
 
 from train import *
@@ -101,7 +103,7 @@ def main(
                 modo = modo_path % i
                 torch.save(G.state_dict(), modo)
 
-                print("Saved %s" % modo)
+                sys.stderr.write("Saved %s\n" % modo)
 
 if __name__ == "__main__":
 
