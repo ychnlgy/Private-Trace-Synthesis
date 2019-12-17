@@ -8,23 +8,15 @@ def main(
     D_lr, G_lr,
     epoch_sample_cycle,
     epoch_sample_count,
-    save_path
+    save_path,
+    noise_multiplier
 ):
-    eps_params = {
-        "N": DATASET_SIZE,
-        "noise_multiplier": 1.1,
-        "minibatch_size": batch_size,
-        "delta": 1e-5,
-        "iterations": epochs
-    }
-
-    D_params = {
-        "l2_norm_clip": 1.0,
-        "microbatch_size": 1,
-        **eps_params
-    }
-
-    epsilon = analysis.epsilon(**eps_params)
+    epsilon = analysis.epsilon(
+        N=datasize,
+        batch_size=batch_size,
+        iterations=epochs,
+        noise_multiplier=noise_multiplier
+    )
     input("Epsilon: %.4f (press any key to continue) " % epsilon)
 
     tset = create_tensorset(fpath, MAX_TRAJ_LENGTH)
@@ -41,10 +33,23 @@ def main(
     G = model.Generator(noise_size, hidden_size, MAX_TRAJ_LENGTH).to(device)
     D = model.Discriminator(MAX_TRAJ_LENGTH, hidden_size).to(device)
 
-    D_optim = optim.DPSGD(D.parameters(), **D_params)
+    D_optim = optim.DPAdam(
+        D.parameters(),
+        lr=D_lr,
+        betas=(0, 0.999),
+
+        l2_norm_clip=1.0,
+        microbatch_size=1,
+        minibatch_size=batch_size,
+        noise_multiplier=noise_multiplier
+    )
     G_optim = torch.optim.Adam(G.parameters(), lr=G_lr, betas=(0, 0.999))
 
-    minibatch_loader, microbatch_loader = sampling.get_data_loaders(**D_params)
+    minibatch_loader, microbatch_loader = sampling.get_data_loaders(
+        minibatch_size=1,
+        microbatch_size=batch_size,
+        iterations=epochs
+    )
 
     with tqdm.tqdm(minibatch_loader(tset), ncols=80) as bar:
         for i, (X,) in enumerate(bar):
@@ -113,6 +118,8 @@ if __name__ == "__main__":
     parser.add_argument("--epoch_sample_cycle", type=int, default=2000)
     parser.add_argument("--epoch_sample_count", type=int, default=100)
     parser.add_argument("--save_path", required=True)
+
+    parser.add_argument("--noise_multiplier", type=float, default=1.1)
 
     args = parser.parse_args()
 
