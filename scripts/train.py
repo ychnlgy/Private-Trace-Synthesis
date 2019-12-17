@@ -5,8 +5,6 @@ import torch
 import torch.utils.data
 import tqdm
 
-from pyvacy import optim, analysis, sampling
-
 from data import brinkhoff_parser, plot_trajectories
 import model_simple as model
 
@@ -27,6 +25,16 @@ def create_dataset(
     batch_size,
     max_length
 ):
+    tdata = create_tensorset(fpath, max_length)
+    dload = torch.utils.data.DataLoader(
+        tdata,
+        batch_size=batch_size,
+        shuffle=True
+    )
+    return dload
+
+
+def create_tensorset(fpath, max_length):
     dataset = numpy.zeros(
         (DATASET_SIZE, 3, max_length),
         dtype=numpy.float32
@@ -42,12 +50,7 @@ def create_dataset(
     adata = torch.from_numpy(dataset).unsqueeze(1)
     assert (adata.abs() <= 1.0).all()
     tdata = torch.utils.data.TensorDataset(adata)
-    dload = torch.utils.data.DataLoader(
-        tdata,
-        batch_size=batch_size,
-        shuffle=True
-    )
-    return dload
+    return tdata
 
 
 def iter_valid_trajectories(Xh):
@@ -68,35 +71,14 @@ def train(
     epoch_sample_cycle,
     epoch_sample_count,
     save_path,
-    debug,
-    use_edp
+    debug
 ):
-    D_Optim, D_params = [
-        (torch.optim.Adam, {"lr": D_lr, "betas": (0, 0.999)}),
-        (optim.DPSGD, {
-                "N": DATASET_SIZE,
-                "l2_norm_clip": 1.0,
-                "noise_multiplier": 1.1,
-                "minibatch_size": batch_size,
-                "microbatch_size": 1,
-                "delta": 1e-5,
-                "iterations": epochs
-            }
-        )
-    ][use_edp]
 
     if debug:
         dset = create_dataset(fpath, epoch_sample_count, MAX_TRAJ_LENGTH)
         (X,) = next(iter(dset))
         plot_and_save(X, save_path % 0)
         return
-
-    if use_edp:
-        epsilon = analysis.epsilon(**D_params)
-        print("Epsilon: %.4f" % epsilon)
-
-
-    raise NotImplementedError("Training for edp vs not is not trivial")
 
     dset = create_dataset(fpath, batch_size, MAX_TRAJ_LENGTH)
 
@@ -106,20 +88,13 @@ def train(
     modo_path = os.path.join(save_path, "E%05d.pkl")
     save_path = os.path.join(save_path, "E%05d.png")
 
-
-
-
-
     device = ["cpu", "cuda"][torch.cuda.is_available()]
     print("Using: %s" % device)
 
     G = model.Generator(noise_size, hidden_size, MAX_TRAJ_LENGTH).to(device)
     D = model.Discriminator(MAX_TRAJ_LENGTH, hidden_size).to(device)
 
-    if device == "cuda":
-        D = torch.nn.DataParallel(D)
-
-    D_optim = D_Optim(D.parameters(), **D_params)
+    D_optim = torch.optim.Adam(D.parameters(), lr=D_lr, betas=(0, 0.999))
     G_optim = torch.optim.Adam(G.parameters(), lr=G_lr, betas=(0, 0.999))
 
     for epoch in range(0, epochs + 1):
@@ -150,7 +125,7 @@ def train(
                     loss.backward()
                     D_optim.step()
 
-                bar.set_description("[E%05d] %.4f" % (epoch, loss.item()))
+                    bar.set_description("[E%05d] %.4f" % (epoch, loss.item()))
 
             if epoch % epoch_sample_cycle == 0 or epoch == epochs:
 
@@ -169,17 +144,17 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--fpath", required=True)
-    parser.add_argument("--epochs", type=int, default=1000)
+    parser.add_argument("--epochs", type=int, default=20000)
 
-    parser.add_argument("--batch_size", type=int, default=512)
-    parser.add_argument("--noise_size", type=int, default=16)
-    parser.add_argument("--hidden_size", type=int, default=8)
-    parser.add_argument("--n_critic", type=int, default=4)
+    parser.add_argument("--batch_size", type=int, default=128)
+    parser.add_argument("--noise_size", type=int, default=32)
+    parser.add_argument("--hidden_size", type=int, default=32)
+    parser.add_argument("--n_critic", type=int, default=3)
     parser.add_argument("--D_lr", type=float, default=2e-4)
     parser.add_argument("--G_lr", type=float, default=5e-5)
-    parser.add_argument("--epoch_sample_cycle", type=int, default=5)
-    parser.add_argument("--epoch_sample_count", type=int, default=400)
-    parser.add_argument("--save_path", default="synthesis")
+    parser.add_argument("--epoch_sample_cycle", type=int, default=20)
+    parser.add_argument("--epoch_sample_count", type=int, default=100)
+    parser.add_argument("--save_path", required=True)
     parser.add_argument("--debug", type=int, default=0)
 
     args = parser.parse_args()
