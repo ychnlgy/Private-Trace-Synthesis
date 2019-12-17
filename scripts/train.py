@@ -5,6 +5,8 @@ import torch
 import torch.utils.data
 import tqdm
 
+from pyvacy import optim, analysis, sampling
+
 from data import brinkhoff_parser, plot_trajectories
 import model_simple as model
 
@@ -17,16 +19,16 @@ MAX_Y = 18000
 
 
 MAX_TRAJ_LENGTH = 240
+DATASET_SIZE = 20000
 
 
 def create_dataset(
     fpath,
     batch_size,
-    max_length,
-    expected_length=20000,
+    max_length
 ):
     dataset = numpy.zeros(
-        (expected_length, 3, max_length),
+        (DATASET_SIZE, 3, max_length),
         dtype=numpy.float32
     )
 
@@ -67,13 +69,21 @@ def train(
     epoch_sample_count,
     save_path,
     debug,
-    use_adamw
+    use_edp
 ):
-    if not os.path.isdir(save_path):
-        os.makedirs(save_path)
-
-    modo_path = os.path.join(save_path, "E%05d.pkl")
-    save_path = os.path.join(save_path, "E%05d.png")
+    D_Optim, D_params = [
+        (torch.optim.Adam, {"lr": D_lr, "betas": (0, 0.999)}),
+        (optim.DPSGD, {
+                "N": DATASET_SIZE,
+                "l2_norm_clip": 1.0,
+                "noise_multiplier": 1.1,
+                "minibatch_size": batch_size,
+                "microbatch_size": 1,
+                "delta": 1e-5,
+                "iterations": epochs
+            }
+        )
+    ][use_edp]
 
     if debug:
         dset = create_dataset(fpath, epoch_sample_count, MAX_TRAJ_LENGTH)
@@ -81,7 +91,24 @@ def train(
         plot_and_save(X, save_path % 0)
         return
 
+    if use_edp:
+        epsilon = analysis.epsilon(**D_params)
+        print("Epsilon: %.4f" % epsilon)
+
+
+    raise NotImplementedError("Training for edp vs not is not trivial")
+
     dset = create_dataset(fpath, batch_size, MAX_TRAJ_LENGTH)
+
+    if not os.path.isdir(save_path):
+        os.makedirs(save_path)
+
+    modo_path = os.path.join(save_path, "E%05d.pkl")
+    save_path = os.path.join(save_path, "E%05d.png")
+
+
+
+
 
     device = ["cpu", "cuda"][torch.cuda.is_available()]
     print("Using: %s" % device)
@@ -92,10 +119,8 @@ def train(
     if device == "cuda":
         D = torch.nn.DataParallel(D)
 
-    Optim = [torch.optim.Adam, torch.optim.AdamW][use_adamw]
-
-    D_optim = Optim(D.parameters(), lr=D_lr, betas=(0, 0.999))
-    G_optim = Optim(G.parameters(), lr=G_lr, betas=(0, 0.999))
+    D_optim = D_Optim(D.parameters(), **D_params)
+    G_optim = torch.optim.Adam(G.parameters(), lr=G_lr, betas=(0, 0.999))
 
     for epoch in range(0, epochs + 1):
 
@@ -156,8 +181,6 @@ if __name__ == "__main__":
     parser.add_argument("--epoch_sample_count", type=int, default=400)
     parser.add_argument("--save_path", default="synthesis")
     parser.add_argument("--debug", type=int, default=0)
-
-    parser.add_argument("--use_adamw", type=int, required=True)
 
     args = parser.parse_args()
 
