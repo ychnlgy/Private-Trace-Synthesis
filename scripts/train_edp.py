@@ -35,13 +35,12 @@ def main(
     G = model.Generator(noise_size, hidden_size, MAX_TRAJ_LENGTH).to(device)
     D = model.Discriminator(MAX_TRAJ_LENGTH, hidden_size).to(device)
 
-    D_optim = optim.DPAdam(
+    D_optim = optim.DPSGD(
         params=D.parameters(),
         lr=D_lr,
-        betas=(0, 0.999),
 
         l2_norm_clip=1.0,
-        microbatch_size=1,
+        microbatch_size=batch_size,
         minibatch_size=batch_size,
         noise_multiplier=noise_multiplier
     )
@@ -49,7 +48,7 @@ def main(
 
     minibatch_loader, microbatch_loader = sampling.get_data_loaders(
         minibatch_size=batch_size,
-        microbatch_size=1,
+        microbatch_size=batch_size,
         iterations=epochs
     )
 
