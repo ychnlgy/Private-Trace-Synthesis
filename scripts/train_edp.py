@@ -11,7 +11,9 @@ def main(
     epoch_sample_cycle,
     epoch_sample_count,
     save_path,
-    noise_multiplier
+    noise_multiplier,
+    l2_norm_clip,
+    weight_decay
 ):
     epsilon = analysis.epsilon(
         N=DATASET_SIZE,
@@ -35,20 +37,21 @@ def main(
     G = model.Generator(noise_size, hidden_size, MAX_TRAJ_LENGTH).to(device)
     D = model.Discriminator(MAX_TRAJ_LENGTH, hidden_size).to(device)
 
-    D_optim = optim.DPSGD(
+    D_optim = optim.DPRMSprop(
         params=D.parameters(),
         lr=D_lr,
+        weight_decay=weight_decay,
 
-        l2_norm_clip=1.0,
-        microbatch_size=batch_size,
+        l2_norm_clip=l2_norm_clip,
+        microbatch_size=1,
         minibatch_size=batch_size,
         noise_multiplier=noise_multiplier
     )
-    G_optim = torch.optim.Adam(G.parameters(), lr=G_lr, betas=(0, 0.999))
+    G_optim = torch.optim.RMSprop(G.parameters(), lr=G_lr, weight_decay=weight_decay)
 
     minibatch_loader, microbatch_loader = sampling.get_data_loaders(
         minibatch_size=batch_size,
-        microbatch_size=batch_size,
+        microbatch_size=1,
         iterations=epochs
     )
 
@@ -56,6 +59,29 @@ def main(
         for i, (X,) in enumerate(bar, 1):
 
             z = torch.randn(X.size(0), noise_size)
+
+            D_optim.zero_grad()
+
+            for Xi, zi in microbatch_loader(
+                torch.utils.data.TensorDataset(X, z)
+            ):
+                Xi = Xi.to(device)
+                zi = zi.to(device)
+
+                with torch.no_grad():
+                    G.eval()
+                    Xh = G(zi)
+
+                D.train()
+                loss = D(Xh).mean() - D(Xi).mean()
+
+                D_optim.zero_microbatch_grad()
+                loss.backward()
+                D_optim.microbatch_step()
+
+            D_optim.step()
+
+            bar.set_description("%.4f" % loss.item())
 
             if i % n_critic == 0:
 
@@ -65,31 +91,6 @@ def main(
                 G_optim.zero_grad()
                 (-D(G(z.to(device)))).mean().backward()
                 G_optim.step()
-
-            else:
-
-                D_optim.zero_grad()
-
-                for Xi, zi in microbatch_loader(
-                    torch.utils.data.TensorDataset(X, z)
-                ):
-                    Xi = Xi.to(device)
-                    zi = zi.to(device)
-
-                    with torch.no_grad():
-                        G.eval()
-                        Xh = G(zi)
-
-                    D.train()
-                    loss = D(Xh).mean() - D(Xi).mean()
-
-                    D_optim.zero_microbatch_grad()
-                    loss.backward()
-                    D_optim.microbatch_step()
-
-                D_optim.step()
-
-                bar.set_description("%.4f" % loss.item())
 
             if i % epoch_sample_cycle == 0:
 
@@ -115,15 +116,16 @@ if __name__ == "__main__":
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--noise_size", type=int, default=32)
     parser.add_argument("--hidden_size", type=int, default=32)
-    parser.add_argument("--n_critic", type=int, default=3)
-    parser.add_argument("--D_lr", type=float, default=2e-4)
-    parser.add_argument("--G_lr", type=float, default=5e-5)
+    parser.add_argument("--n_critic", type=int, default=5)
+    parser.add_argument("--D_lr", type=float, default=1e-3)
+    parser.add_argument("--G_lr", type=float, default=1e-3)
     parser.add_argument("--epoch_sample_cycle", type=int, default=20)
     parser.add_argument("--epoch_sample_count", type=int, default=100)
     parser.add_argument("--save_path", required=True)
 
     parser.add_argument("--noise_multiplier", type=float, default=1.1)
-
+    parser.add_argument("--l2_norm_clip", type=float, default=1.0)
+    parser.add_argument("--weight_decay", type=float, default=0.0)
     args = parser.parse_args()
 
     main(**vars(args))
