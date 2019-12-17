@@ -46,8 +46,8 @@ def main(
     G_optim = torch.optim.Adam(G.parameters(), lr=G_lr, betas=(0, 0.999))
 
     minibatch_loader, microbatch_loader = sampling.get_data_loaders(
-        minibatch_size=1,
-        microbatch_size=batch_size,
+        minibatch_size=batch_size,
+        microbatch_size=1,
         iterations=epochs
     )
 
@@ -55,7 +55,7 @@ def main(
         for i, (X,) in enumerate(bar):
 
             z = torch.randn(batch_size, noise_size)
-            print(X.size(), z.size())
+
             if i % n_critic == 0:
 
                 G.train()
