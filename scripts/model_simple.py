@@ -50,6 +50,7 @@ class Generator(torch.nn.Module):
                 ]
             ),
 
+            torch.nn.BatchNorm1d(hidden_size),
             torch.nn.ReLU(),
             torch.nn.ConvTranspose1d(hidden_size, hidden_size, 8, stride=2, padding=3),
 
@@ -90,7 +91,9 @@ class Discriminator(torch.nn.Module):
             ),
 
             ResBlock(
-                shortcut=torch.nn.Conv1d(hidden_size, hidden_size, 1),
+                shortcut=torch.nn.utils.spectral_norm(
+                    torch.nn.Conv1d(hidden_size, hidden_size, 1)
+                ),
                 act=torch.nn.LeakyReLU(),
                 layers=[
                     torch.nn.LeakyReLU(),
@@ -111,7 +114,9 @@ class Discriminator(torch.nn.Module):
             ),
 
             ResBlock(
-                shortcut=torch.nn.Conv1d(hidden_size, hidden_size, 1),
+                shortcut=torch.nn.utils.spectral_norm(
+                    torch.nn.Conv1d(hidden_size, hidden_size, 1)
+                ),
                 act=torch.nn.LeakyReLU(),
                 layers=[
                     torch.nn.LeakyReLU(),
