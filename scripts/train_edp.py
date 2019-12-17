@@ -1,4 +1,5 @@
-from pyvacy import optim, analysis, sampling
+from pyvacy import optim, analysis
+import pyvacy_sampling as sampling
 
 from train import *
 
