@@ -116,3 +116,16 @@ Trip error:                     0.050683045080263334    0.01919559574935812
 *Diameter error:                0.008101308895193405    0.026553808548257285
 *Length error:                  0.04971716163705869     0.05082140129080564
 ```
+
+At 15000 epochs:
+
+```
+Filename:                       public-gan.dat          brinkhoff.dat-eps1.0-iteration0.dat
+*Query AvRE:                    0.029894383218779765    0.10578427372064991
+*Location coverage kendall-tau: 0.7732936507936508      0.7259920634920635
+*Frequent pattern F1:           0.71                    0.68
+*Frequent pattern support:      0.2834304722670945      0.42459108223522285
+Trip error:                     0.051443139331389866    0.01919559574935812
+*Diameter error:                0.006277135780115614    0.026553808548257285
+*Length error:                  0.046926810938924285    0.05082140129080564
+```
