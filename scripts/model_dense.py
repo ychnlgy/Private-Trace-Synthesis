@@ -39,6 +39,9 @@ class Discriminator(torch.nn.Module):
     def __init__(self, array_length, hidden_size):
         super().__init__()
         self.net = torch.nn.Sequential(
+
+            Lambda(lambda X: X.squeeze(1)),
+
             # (3, array_length) -> (1, array_length//2)
             torch.nn.utils.spectral_norm(
                 torch.nn.Conv1d(3, 1, 7, padding=3, stride=2)
