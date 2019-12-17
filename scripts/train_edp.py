@@ -55,7 +55,7 @@ def main(
         for i, (X,) in enumerate(bar):
 
             z = torch.randn(batch_size, noise_size)
-
+            print(X.size(), z.size())
             if i % n_critic == 0:
 
                 G.train()
