@@ -52,7 +52,7 @@ def main(
     )
 
     with tqdm.tqdm(minibatch_loader(tset), ncols=80) as bar:
-        for i, (X,) in enumerate(bar):
+        for i, (X,) in enumerate(bar, 1):
 
             z = torch.randn(X.size(0), noise_size)
 
@@ -98,8 +98,10 @@ def main(
                     Xh = G(z)
                     plot_and_save(Xh, save_path % i)
 
-                torch.save(G.state_dict(), modo_path % i)
+                modo = modo_path % i
+                torch.save(G.state_dict(), modo)
 
+                print("Saved %s" % modo)
 
 if __name__ == "__main__":
 
@@ -115,7 +117,7 @@ if __name__ == "__main__":
     parser.add_argument("--n_critic", type=int, default=3)
     parser.add_argument("--D_lr", type=float, default=2e-4)
     parser.add_argument("--G_lr", type=float, default=5e-5)
-    parser.add_argument("--epoch_sample_cycle", type=int, default=2000)
+    parser.add_argument("--epoch_sample_cycle", type=int, default=20)
     parser.add_argument("--epoch_sample_count", type=int, default=100)
     parser.add_argument("--save_path", required=True)
 
