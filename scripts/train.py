@@ -6,7 +6,7 @@ import torch.utils.data
 import tqdm
 
 from data import brinkhoff_parser, plot_trajectories
-import model_simple as model
+import model_dense as model
 
 
 MID_X = 12000
