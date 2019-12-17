@@ -62,7 +62,7 @@ def iter_valid_trajectories(Xh):
 
 def plot_and_save(Xh, save_path):
     Xh = iter_valid_trajectories(Xh)
-    plot_trajectories.plot_trajectories(Xh, save_path, prob=1.0)
+    plot_trajectories.plot_trajectories(Xh, save_path, prob=1.0, use_tqdm=False)
 
 def train(
     fpath, batch_size, noise_size,
