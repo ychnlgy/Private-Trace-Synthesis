@@ -9,6 +9,7 @@ import model_tiny as model
 def main(
     fpath, batch_size, noise_size,
     hidden_size, epochs, n_critic,
+    n_generator,
     D_lr, G_lr,
     epoch_sample_cycle,
     epoch_sample_count,
