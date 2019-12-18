@@ -74,6 +74,12 @@ def train(
     debug
 ):
 
+    if not os.path.isdir(save_path):
+        os.makedirs(save_path)
+
+    modo_path = os.path.join(save_path, "E%05d.pkl")
+    save_path = os.path.join(save_path, "E%05d.png")
+
     if debug:
         dset = create_dataset(fpath, epoch_sample_count, MAX_TRAJ_LENGTH)
         (X,) = next(iter(dset))
@@ -81,12 +87,6 @@ def train(
         return
 
     dset = create_dataset(fpath, batch_size, MAX_TRAJ_LENGTH)
-
-    if not os.path.isdir(save_path):
-        os.makedirs(save_path)
-
-    modo_path = os.path.join(save_path, "E%05d.pkl")
-    save_path = os.path.join(save_path, "E%05d.png")
 
     device = ["cpu", "cuda"][torch.cuda.is_available()]
     print("Using: %s" % device)
