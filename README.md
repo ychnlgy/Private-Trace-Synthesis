@@ -129,3 +129,20 @@ Trip error:                     0.051443139331389866    0.01919559574935812
 *Diameter error:                0.006277135780115614    0.026553808548257285
 *Length error:                  0.046926810938924285    0.05082140129080564
 ```
+
+### Private GAN
+
+First we try to train a private GAN using differentially-private SGD for the discriminator only. At 20000 epochs:
+
+![alt text](images/private-D-I20000.png)
+
+```
+Filename:                       public-gan.dat          brinkhoff.dat-eps1.0-iteration0.dat
+Query AvRE:                     0.636400129979293       0.10578427372064991
+Location coverage kendall-tau:  0.4899603174603175      0.7259920634920635
+Frequent pattern F1:            0.18                    0.68
+Frequent pattern support:       3.3810501418785424      0.42459108223522285
+Trip error:                     0.620681087727295       0.01919559574935812
+Diameter error:                 0.4988209244361573      0.026553808548257285
+Length error:                   0.4482031507718248      0.05082140129080564
+```
