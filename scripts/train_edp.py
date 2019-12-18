@@ -64,6 +64,8 @@ def main(
 
         D_optim.zero_grad()
 
+        losses = []
+
         for Xi, zi in microbatch_loader(
             torch.utils.data.TensorDataset(X, z)
         ):
@@ -81,9 +83,11 @@ def main(
             loss.backward()
             D_optim.microbatch_step()
 
+            losses.append(loss.item())
+
         D_optim.step()
 
-        print("[E%05d] %.4f" % (i, loss.item()))
+        print("[E%05d] %.4f" % (i, sum(losses)/len(losses)))
 
         if i % n_critic == 0:
 
