@@ -20,6 +20,8 @@ def traj_to_string(traj):
 
 def main(save_dat, noise_size, hidden_size, model_path, cap, tiny, dataset_size=20000, batch_size=100):
 
+    global model
+
     if tiny:
         model = model_tiny
 
