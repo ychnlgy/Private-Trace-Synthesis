@@ -4,6 +4,8 @@ from pyvacy import optim, analysis, sampling
 
 from train import *
 
+import model_tiny as model
+
 def main(
     fpath, batch_size, noise_size,
     hidden_size, epochs, n_critic,
@@ -55,55 +57,56 @@ def main(
         iterations=epochs
     )
 
-    with tqdm.tqdm(minibatch_loader(tset), ncols=80) as bar:
-        for i, (X,) in enumerate(bar, 1):
+    for i, (X,) in enumerate(minibatch_loader(tset), 1):
 
-            z = torch.randn(X.size(0), noise_size)
+        z = torch.randn(X.size(0), noise_size)
 
-            D_optim.zero_grad()
+        D_optim.zero_grad()
 
-            for Xi, zi in microbatch_loader(
-                torch.utils.data.TensorDataset(X, z)
-            ):
-                Xi = Xi.to(device)
-                zi = zi.to(device)
+        for Xi, zi in microbatch_loader(
+            torch.utils.data.TensorDataset(X, z)
+        ):
+            Xi = Xi.to(device)
+            zi = zi.to(device)
 
-                with torch.no_grad():
-                    G.eval()
-                    Xh = G(zi)
+            with torch.no_grad():
+                G.eval()
+                Xh = G(zi)
 
-                D.train()
-                loss = D(Xh).mean() - D(Xi).mean()
+            D.train()
+            loss = D(Xh).mean() - D(Xi).mean()
 
-                D_optim.zero_microbatch_grad()
-                loss.backward()
-                D_optim.microbatch_step()
+            D_optim.zero_microbatch_grad()
+            loss.backward()
+            D_optim.microbatch_step()
 
-            D_optim.step()
+        D_optim.step()
 
-            bar.set_description("%.4f" % loss.item())
+        print("[E%05d] %.4f" % (i, loss.item()))
 
-            if i % n_critic == 0:
+        if i % n_critic == 0:
 
-                G.train()
+            G.train()
+            D.eval()
 
-                D.eval()
+            for j in range(n_generator):
+                z = torch.randn(batch_size, noise_size)
                 G_optim.zero_grad()
                 (-D(G(z.to(device)))).mean().backward()
                 G_optim.step()
 
-            if i % epoch_sample_cycle == 0:
+        if i % epoch_sample_cycle == 0:
 
-                with torch.no_grad():
-                    G.eval()
-                    z = torch.randn(epoch_sample_count, noise_size).to(device)
-                    Xh = G(z)
-                    plot_and_save(Xh, save_path % i)
+            with torch.no_grad():
+                G.eval()
+                z = torch.randn(epoch_sample_count, noise_size).to(device)
+                Xh = G(z)
+                plot_and_save(Xh, save_path % i)
 
-                modo = modo_path % i
-                torch.save(G.state_dict(), modo)
+            modo = modo_path % i
+            torch.save(G.state_dict(), modo)
 
-                sys.stderr.write("Saved %s\n" % modo)
+            print("Saved %s" % modo)
 
 if __name__ == "__main__":
 
@@ -116,7 +119,8 @@ if __name__ == "__main__":
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--noise_size", type=int, default=32)
     parser.add_argument("--hidden_size", type=int, default=32)
-    parser.add_argument("--n_critic", type=int, default=5)
+    parser.add_argument("--n_critic", type=int, default=1)
+    parser.add_argument("--n_generator", type=int, default=4)
     parser.add_argument("--D_lr", type=float, default=2e-4)
     parser.add_argument("--G_lr", type=float, default=5e-5)
     parser.add_argument("--epoch_sample_cycle", type=int, default=20)
