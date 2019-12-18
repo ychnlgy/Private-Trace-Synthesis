@@ -75,6 +75,8 @@ def train(
     debug,
     tiny
 ):
+    global model
+
     if tiny:
         model = model_tiny
 
