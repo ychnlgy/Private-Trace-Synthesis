@@ -40,9 +40,11 @@ class Generator(torch.nn.Module):
                 shortcut=torch.nn.Conv1d(hidden_size, hidden_size, 1),
                 act=torch.nn.ReLU(),
                 layers=[
+                    torch.nn.BatchNorm1d(hidden_size),
                     torch.nn.ReLU(),
                     torch.nn.Conv1d(hidden_size, hidden_size, 7, padding=3),
 
+                    torch.nn.BatchNorm1d(hidden_size),
                     torch.nn.ReLU(),
                     torch.nn.Conv1d(hidden_size, hidden_size, 7, padding=3)
                 ]
@@ -55,14 +57,17 @@ class Generator(torch.nn.Module):
                 shortcut=torch.nn.Conv1d(hidden_size, hidden_size, 1),
                 act=torch.nn.ReLU(),
                 layers=[
+                    torch.nn.BatchNorm1d(hidden_size),
                     torch.nn.ReLU(),
                     torch.nn.Conv1d(hidden_size, hidden_size, 11, padding=5),
 
+                    torch.nn.BatchNorm1d(hidden_size),
                     torch.nn.ReLU(),
                     torch.nn.Conv1d(hidden_size, hidden_size, 11, padding=5)
                 ]
             ),
 
+            torch.nn.BatchNorm1d(hidden_size),
             torch.nn.ReLU(),
             torch.nn.Conv1d(hidden_size, 3, 7, padding=3),
 
