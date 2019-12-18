@@ -4,6 +4,7 @@ import torch
 import torch.utils.data
 
 import model_simple as model
+import model_tiny
 
 from train import MAX_TRAJ_LENGTH, iter_valid_trajectories, MID_X, MAX_X, MID_Y, MAX_Y
 
@@ -17,7 +18,10 @@ def traj_to_string(traj):
     return ">0:%s;" % line
 
 
-def main(save_dat, noise_size, hidden_size, model_path, cap, dataset_size=20000, batch_size=100):
+def main(save_dat, noise_size, hidden_size, model_path, cap, tiny, dataset_size=20000, batch_size=100):
+
+    if tiny:
+        model = model_tiny
 
     device = ["cpu", "cuda"][torch.cuda.is_available()]
     print("Using: %s (cuda? %s)" % (device, torch.cuda.is_available()))
@@ -68,6 +72,7 @@ if __name__ == "__main__":
     parser.add_argument("--hidden_size", type=int, required=True)
     parser.add_argument("--model_path", required=True)
     parser.add_argument("--cap", type=int, required=True)
+    parser.add_argument("--tiny", type=int, required=True)
 
     args = parser.parse_args()
 
