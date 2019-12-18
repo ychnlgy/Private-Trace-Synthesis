@@ -7,6 +7,7 @@ import tqdm
 
 from data import brinkhoff_parser, plot_trajectories
 import model_simple as model
+import model_tiny
 
 
 MID_X = 12000
@@ -71,8 +72,12 @@ def train(
     epoch_sample_cycle,
     epoch_sample_count,
     save_path,
-    debug
+    debug,
+    tiny
 ):
+    if tiny:
+        model = model_tiny
+
 
     if not os.path.isdir(save_path):
         os.makedirs(save_path)
@@ -159,6 +164,7 @@ if __name__ == "__main__":
     parser.add_argument("--epoch_sample_count", type=int, default=100)
     parser.add_argument("--save_path", required=True)
     parser.add_argument("--debug", type=int, default=0)
+    parser.add_argument("--tiny", type=int, required=True)
 
     args = parser.parse_args()
 
