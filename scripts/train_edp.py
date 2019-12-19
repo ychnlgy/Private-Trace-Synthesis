@@ -4,7 +4,7 @@ from pyvacy import optim, analysis, sampling
 
 from train import *
 
-import model_tiny as model
+import model_tiny
 
 def main(
     fpath, batch_size, noise_size,
@@ -16,8 +16,14 @@ def main(
     save_path,
     noise_multiplier,
     l2_norm_clip,
-    weight_decay
+    weight_decay,
+    tiny
 ):
+
+    global model
+    if tiny:
+        model = model_tiny
+
     epsilon = analysis.epsilon(
         N=DATASET_SIZE,
         batch_size=batch_size,
@@ -135,6 +141,7 @@ if __name__ == "__main__":
     parser.add_argument("--noise_multiplier", type=float, default=1.1)
     parser.add_argument("--l2_norm_clip", type=float, default=1.0)
     parser.add_argument("--weight_decay", type=float, default=0.0)
+    parser.add_argument("--tiny", type=int, required=True)
     args = parser.parse_args()
 
     main(**vars(args))
