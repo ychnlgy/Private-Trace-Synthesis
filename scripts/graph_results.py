@@ -15,25 +15,37 @@ PRIVATE_GAN = [
     (
         2000,
         """
-        Query AvRE:		0.6323176199402174
-        Location coverage kendall-tau:		0.04400793650793651
-        Frequent pattern F1:		0.13
-        Frequent pattern support:		4.0329198567195785
-        Trip error:		0.5708472005911869
-        Diameter error:		0.14637231374192683
-        Length error:		0.23893980391668793
+        Query AvRE:		0.5867354893834693
+        Location coverage kendall-tau:		0.37202380952380953
+        Frequent pattern F1:		0.16
+        Frequent pattern support:		5.135030731279546
+        Trip error:		0.597405384722441
+        Diameter error:		0.21851076806483272
+        Length error:		0.2836412416333293
         """
     ),
     (
         3000,
         """
-        Query AvRE:		0.8123456408527069
-        Location coverage kendall-tau:		0.17694444444444443
-        Frequent pattern F1:		0.05000000000000001
-        Frequent pattern support:		15.294784512300561
-        Trip error:		0.5729081267032539
-        Diameter error:		0.3514691414501607
-        Length error:		0.34655626160045866
+        Query AvRE:		0.6548456429592038
+        Location coverage kendall-tau:		0.27884920634920635
+        Frequent pattern F1:		0.13
+        Frequent pattern support:		16.34251608401513
+        Trip error:		0.593959215534686
+        Diameter error:		0.2235978491581211
+        Length error:		0.3250256270903237
+        """
+    ),
+    (
+        5000,
+        """
+        Query AvRE:		0.6552354135890082
+        Location coverage kendall-tau:		0.17257936507936508
+        Frequent pattern F1:		0.06
+        Frequent pattern support:		1.49122399693511
+        Trip error:		0.6288128188164335
+        Diameter error:		0.3358998551607076
+        Length error:		0.3851548599511671
         """
     ),
 ]
