@@ -24,9 +24,11 @@ class Generator(torch.nn.Module):
             torch.nn.ReLU(),
             torch.nn.ConvTranspose1d(hidden_size, hidden_size, 8, stride=2, padding=3),
 
+            torch.nn.BatchNorm1d(hidden_size),
             torch.nn.ReLU(),
             torch.nn.ConvTranspose1d(hidden_size, hidden_size, 8, stride=2, padding=3),
 
+            torch.nn.BatchNorm1d(hidden_size),
             torch.nn.ReLU(),
             torch.nn.Conv1d(hidden_size, 3, 7, padding=3),
 

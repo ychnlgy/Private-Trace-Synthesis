@@ -23,7 +23,19 @@ PRIVATE_GAN = [
         Diameter error:		0.14637231374192683
         Length error:		0.23893980391668793
         """
-    )
+    ),
+    (
+        3000,
+        """
+        Query AvRE:		0.8123456408527069
+        Location coverage kendall-tau:		0.17694444444444443
+        Frequent pattern F1:		0.05000000000000001
+        Frequent pattern support:		15.294784512300561
+        Trip error:		0.5729081267032539
+        Diameter error:		0.3514691414501607
+        Length error:		0.34655626160045866
+        """
+    ),
 ]
 
 PUBLIC_GAN = [
