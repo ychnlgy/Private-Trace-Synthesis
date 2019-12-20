@@ -1,1 +1,1 @@
-srun --mem=64G --gres=gpu:1 --cpus-per-task=8 -p p100 python3 -u train.py --fpath data/degree_5.npy --epochs 1000 --save_path ../images/synthesis/ --debug=0 --noise_size=8 --hidden_size=8 --epoch_sample_count 10 --batch_size=64 --n_critic=3 --epoch_sample_cycle=20 --tiny 0
+srun --mem=64G --gres=gpu:1 --cpus-per-task=8 -p p100 python3 -u train.py --fpath data/degree_5.npy --epochs 1000 --save_path ../images/synthesis/ --debug=0 --noise_size=8 --hidden_size=64 --epoch_sample_count 10 --batch_size=64 --n_critic=3 --epoch_sample_cycle=20 --tiny 0

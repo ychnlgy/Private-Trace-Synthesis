@@ -108,8 +108,8 @@ def train(
 	device = ["cpu", "cuda"][torch.cuda.is_available()]
 	print("Using: %s" % device)
 
-	G = model.Generator(noise_size, hidden_size, MAX_TRAJ_LENGTH).to(device)
-	D = model.Discriminator(MAX_TRAJ_LENGTH, hidden_size).to(device)
+	G = model.Generator(noise_size, hidden_size).to(device)
+	D = model.Discriminator(8, hidden_size).to(device)
 
 	if device == "cuda":
 		D = torch.nn.DataParallel(D)
@@ -121,8 +121,7 @@ def train(
 
 		with tqdm.tqdm(dset, ncols=80) as bar:
 			for i, X in enumerate(bar, 1):
-				pdb.set_trace()
-				X = X.to(device)
+				X = X.float().to(device)
 				z = torch.randn(batch_size, noise_size).to(device)
 
 				if i % n_critic == 0:
@@ -168,7 +167,7 @@ if __name__ == "__main__":
 
 	parser.add_argument("--batch_size", type=int, default=128)
 	parser.add_argument("--noise_size", type=int, default=32)
-	parser.add_argument("--hidden_size", type=int, default=32)
+	parser.add_argument("--hidden_size", type=int, default=64)
 	parser.add_argument("--n_critic", type=int, default=3)
 	parser.add_argument("--D_lr", type=float, default=2e-4)
 	parser.add_argument("--G_lr", type=float, default=5e-5)

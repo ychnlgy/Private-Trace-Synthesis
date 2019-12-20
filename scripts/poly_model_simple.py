@@ -25,23 +25,23 @@ class ResBlock(torch.nn.Module):
 
 class Generator(torch.nn.Module):
 
-    def __init__(self, noise_size, hidden_size):
+    def __init__(self, noise_size, hidden_size, out_dim=8):
         super().__init__()
         self.net = torch.nn.Sequential(
             torch.nn.Linear(noise_size, hidden_size),
-			torch.nn.BatchNorm1d(hidden_size)
+			torch.nn.BatchNorm1d(hidden_size),
 			torch.nn.ReLU(),
 
 			torch.nn.Linear(hidden_size, 2 * hidden_size), 
-			torch.nn.BatchNorm1d(2 * hidden_size)
+			torch.nn.BatchNorm1d(2 * hidden_size),
 			torch.nn.ReLU(),
 			
 			torch.nn.Linear(2 * hidden_size, 4 * hidden_size), 
-			torch.nn.BatchNorm1d(4 * hidden_size)
+			torch.nn.BatchNorm1d(4 * hidden_size),
 			torch.nn.ReLU(),
 
 			torch.nn.Linear(4 * hidden_size, out_dim), 
-			torch.nn.BatchNorm1d(out_dim)
+			torch.nn.BatchNorm1d(out_dim),
 			torch.nn.ReLU(),
 
             torch.nn.Tanh()
@@ -63,23 +63,23 @@ class Discriminator(torch.nn.Module):
 
 			torch.nn.utils.spectral_norm(
 				torch.nn.Linear(hidden_size, 2 * hidden_size)
-			)
+			),
 			torch.nn.LeakyReLU(),
 
 			torch.nn.utils.spectral_norm(
 				torch.nn.Linear(2* hidden_size, 4 * hidden_size)
-			)
+			),
 			torch.nn.LeakyReLU(),
 
 			torch.nn.utils.spectral_norm(
 				torch.nn.Linear(4 * hidden_size, hidden_size)
-			)
+			),
 			torch.nn.LeakyReLU(),
 
 
 			torch.nn.utils.spectral_norm(
 				torch.nn.Linear(hidden_size, 1)
-			)
+			),
 		)
         
 
