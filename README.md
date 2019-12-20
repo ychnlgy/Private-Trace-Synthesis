@@ -161,3 +161,68 @@ Trip error:                     0.620681087727295       0.01919559574935812
 Diameter error:                 0.4988209244361573      0.026553808548257285
 Length error:                   0.4482031507718248      0.05082140129080564
 ```
+
+
+
+### Poly Represent
+
+```python
+for traj in iter_trajectories("brinkhoff.dat"):
+  
+		x = traj[:,0]
+		y = traj[:,1]
+    
+    # fit the original data to poly with args.degree
+		pfit = np.polyfit(x, y, args.degree)
+		func_y = np.poly1d(pfit) # generate function of f
+		traj[:,1] = func_y(traj[:,0]) # replace the original y by the new y
+
+		lines.append("#%d:" % i )
+		lines.append(traj_to_string(traj))
+		i += 1
+    
+	with open(save_dat, "w") as f:
+		f.write("\n".join(lines))
+```
+
+
+
+Evaluation of the poly dataset generated above, we got:
+
+```
+Filename: d3.dat
+Query AvRE:											0.11778861570219686
+Location coverage kendall-tau:	0.799404761904762
+Frequent pattern F1:						0.67
+Frequent pattern support:				0.43828738301347625
+Trip error:											0.041560107542598784
+Diameter error:									0.0028318682182573262
+Length error:										0.010689317359303062
+```
+
+```
+Filename: d5.dat
+Query AvRE:											0.12208954118604075
+Location coverage kendall-tau:	0.8060714285714285
+Frequent pattern F1:						0.67
+Frequent pattern support:				0.48829091787160356
+Trip error:											0.035773687582232004
+Diameter error:									0.0018972783694032964
+Length error:										0.01798421354993425
+
+```
+
+```
+Filename: d6.dat
+Query AvRE:											0.12313647520736361
+Location coverage kendall-tau:	0.8028174603174603
+Frequent pattern F1:						0.66
+Frequent pattern support:				0.5274448307562064
+Trip error:											0.033580478963772115
+Diameter error:									0.001832723043432205
+Length error:										0.020976995716376727
+```
+
+this would be the error caused by the poly representation itself. if we take this as the ground truth, and find something close to it, theoretically the metric would be pretty close to this one. This partially supports the proof that w-dist remains specific property.
+
+and future work could be to find a better representation than poly that performs well on these metric; then trying to prove it has similar property with poly represent regarding in terms of remaining property under w-dist. that proof is likely to be okay with most of the continuous representation that keeps distance order in specific mapping.
