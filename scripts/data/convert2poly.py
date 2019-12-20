@@ -1,5 +1,6 @@
 import numpy
 import numpy as np
+import pdb
 
 def iter_trajectories(fpath):
 	"""Iterate array of shape (T, 2).
@@ -49,7 +50,10 @@ if __name__ == "__main__":
 	lines = []
 	for traj in iter_trajectories("brinkhoff.dat"):
 		poly_fit = np.polyfit(traj[:,0], traj[:,1], args.degree)
-		lines.append(poly_fit)
+		line = np.zeros(args.degree+3)
+		line[:args.degree+1] = poly_fit
+		line[-2], line[-1] = traj[0][0], traj[-1][0]
+		lines.append(line)
 	lines = np.asarray(lines)
 	print(args.degree, lines.shape)
 	np.save( args.save+str(args.degree)+'.npy', lines)
