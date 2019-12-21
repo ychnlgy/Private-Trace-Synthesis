@@ -5,13 +5,15 @@ import tqdm
 from matplotlib import pyplot
 
 
-def plot_trajectories(trajectories, save_path, prob=0.05):
+def plot_trajectories(trajectories, save_path, prob=0.05, use_tqdm=True):
     """Randomly plots <prob> trajectories.
 
     The full set of trajectories is messy and takes too long.
     """
     trajectories = list(trajectories)
-    for traj in tqdm.tqdm(trajectories, ncols=80):
+    if use_tqdm:
+        trajectories = tqdm.tqdm(trajectories, ncols=80)
+    for traj in trajectories:
         if random.random() < prob:
             pyplot.plot(traj[:, 0], traj[:, 1], ":")
     pyplot.savefig(save_path, bbox_inches="tight")
