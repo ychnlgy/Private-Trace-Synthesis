@@ -177,3 +177,13 @@ Trip error:                     0.620681087727295       0.01919559574935812
 Diameter error:                 0.4988209244361573      0.026553808548257285
 Length error:                   0.4482031507718248      0.05082140129080564
 ```
+
+### Creating a synthetic dataset using the trained generator
+
+If you used the vanilla GAN example command above, you should be able to find `images/synthesis/vanilla/E15000.pkl`. Copy that to `scripts/` and run:
+
+```bash
+python3 -u synthesize.py --save_dat public-gan.dat --noise_size=32 --hidden_size=32 --model_path E01000.pkl --cap 10 --tiny 0 --bn 1
+```
+
+This will produce `public-gan.dat` in the current directory, which you can evaluate using the AdaTrace evaluation commands shown above.
