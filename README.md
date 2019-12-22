@@ -57,6 +57,12 @@ Below is an example of a dataset of Brinkhoff synthesized using AdaTrace with `Î
 
 ### GAN Experiments
 
+To train a vanilla GAN on Brinkhoff, change directories to `scripts/`, make sure `brinhoff.dat` is in the current directory and do:
+
+```bash
+python3 -u train.py --fpath brinkhoff.dat --save_path ../images/synthesis/vanilla/ --tiny 0
+```
+
 Using a simple GAN with no privacy, we produce the following 20,000 traces at 2000 epochs:
 
 ![alt text](images/public-gan.png)
@@ -132,6 +138,10 @@ Trip error:                     0.051443139331389866    0.01919559574935812
 
 We also try a tiny GAN, which obtains (820 epochs)
 
+```bash
+python3 -u train.py --fpath brinkhoff.dat --save_path ../images/synthesis/tiny/ --tiny 1
+```
+
 ```
 Filename:                       public-gan.dat          brinkhoff.dat-eps1.0-iteration0.dat
 Query AvRE:                     0.11798949194063456     0.10578427372064991
@@ -147,7 +157,13 @@ Length error:                   0.24211632049734993     0.05082140129080564
 
 ### Private GAN
 
-First we try to train a private GAN using differentially-private SGD for the discriminator only. At 20000 epochs:
+To train a differentially private GAN with `Îµ = 1.5` on Brinkhoff, do:
+
+```bash
+python3 -u train_edp.py --epochs 15000 --batch_size 64 --noise_multiplier 1.5 --fpath brinkhoff.dat --save_path ../images/synthesis/edp-gan/ --tiny 1
+```
+
+We try to train a private GAN using differentially-private SGD for the discriminator only. At 15000 epochs:
 
 ![alt text](images/private-D-I20000.png)
 
