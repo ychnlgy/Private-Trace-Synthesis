@@ -1,5 +1,5 @@
 # Private-Trace-Synthesis
-Algorithms for synthesizing differentially-private traces.
+Algorithms for synthesizing differentially-private traces. The full written report is [here](./private_trace_synthesis_report.pdf).
 
 ### Installation
 ```bash
